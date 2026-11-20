@@ -193,6 +193,14 @@ mobileNav.querySelectorAll('a').forEach(link => {
 
   nextBtn.addEventListener('click', goNext);
 
+  // Pressing the keyboard's return/next key on a single-line field advances the step,
+  // since typing an address on mobile won't otherwise trigger anything on its own.
+  form.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.target.tagName === 'TEXTAREA') return;
+    e.preventDefault();
+    goNext();
+  });
+
   backBtn.addEventListener('click', () => {
     if (current > 1) {
       current -= 1;
