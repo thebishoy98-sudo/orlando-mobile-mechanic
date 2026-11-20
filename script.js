@@ -23,11 +23,26 @@ mobileNav.querySelectorAll('a').forEach(link => {
 
   const steps = Array.from(form.querySelectorAll('.quote-step'));
   const stepCurrentEl = document.getElementById('step-current');
+  const stepTotalEl = document.getElementById('step-total');
   const backBtn = document.getElementById('quote-back');
   const nextBtn = document.getElementById('quote-next');
   const summaryEl = document.getElementById('quote-summary');
   const smsLink = document.getElementById('quote-send-sms');
+  const yearSelect = document.getElementById('vehicle-year');
+  const makeSelect = document.getElementById('vehicle-make');
+  const makeOther = document.getElementById('make-other');
+  const issueOther = document.getElementById('issue-other');
   let current = 1;
+
+  stepTotalEl.textContent = String(steps.length);
+
+  const thisYear = new Date().getFullYear();
+  for (let y = thisYear + 1; y >= 1990; y--) {
+    const opt = document.createElement('option');
+    opt.value = String(y);
+    opt.textContent = String(y);
+    yearSelect.appendChild(opt);
+  }
 
   function getRadioValue(name) {
     const checked = form.querySelector(`input[name="${name}"]:checked`);
@@ -38,17 +53,22 @@ mobileNav.querySelectorAll('a').forEach(link => {
     if (step === 1) {
       const issue = getRadioValue('issue');
       if (!issue) return false;
-      if (issue === 'Other') return document.getElementById('issue-other').value.trim().length > 0;
+      if (issue === 'Other') return issueOther.value.trim().length > 0;
       return true;
     }
-    if (step === 2) {
-      return document.getElementById('vehicle').value.trim().length > 0 &&
-             document.getElementById('location').value.trim().length > 0;
-    }
+    if (step === 2) return yearSelect.value !== '';
     if (step === 3) {
-      return getRadioValue('parts') !== '' && getRadioValue('pricing') !== '';
+      if (makeSelect.value === '') return false;
+      if (makeSelect.value === 'Other') return makeOther.value.trim().length > 0;
+      return true;
     }
     if (step === 4) {
+      return document.getElementById('vehicle-model').value.trim().length > 0 &&
+             document.getElementById('location').value.trim().length > 0;
+    }
+    if (step === 5) return getRadioValue('parts') !== '';
+    if (step === 6) return getRadioValue('pricing') !== '';
+    if (step === 7) {
       return document.getElementById('name').value.trim().length > 0 &&
              document.getElementById('phone').value.trim().length > 0;
     }
@@ -57,8 +77,11 @@ mobileNav.querySelectorAll('a').forEach(link => {
 
   function buildSummary() {
     let issue = getRadioValue('issue');
-    if (issue === 'Other') issue = document.getElementById('issue-other').value.trim();
-    const vehicle = document.getElementById('vehicle').value.trim();
+    if (issue === 'Other') issue = issueOther.value.trim();
+    let make = makeSelect.value;
+    if (make === 'Other') make = makeOther.value.trim();
+    const year = yearSelect.value;
+    const model = document.getElementById('vehicle-model').value.trim();
     const location = document.getElementById('location').value.trim();
     const parts = getRadioValue('parts');
     const pricing = getRadioValue('pricing');
@@ -68,7 +91,7 @@ mobileNav.querySelectorAll('a').forEach(link => {
     return [
       'Quote request from the Orlando Mobile Mechanic website:',
       `Issue: ${issue}`,
-      `Vehicle: ${vehicle}`,
+      `Vehicle: ${year} ${make} ${model}`.trim(),
       `Location: ${location}`,
       `Has parts: ${parts}`,
       `Wants price estimate first: ${pricing}`,
@@ -88,6 +111,18 @@ mobileNav.querySelectorAll('a').forEach(link => {
     smsLink.href = `sms:${BUSINESS_PHONE}${separator}body=${body}`;
   }
 
+  function goNext() {
+    if (!validateStep(current)) {
+      nextBtn.disabled = true;
+      setTimeout(() => { nextBtn.disabled = false; }, 350);
+      return;
+    }
+    if (current < steps.length) {
+      current += 1;
+      showStep(current);
+    }
+  }
+
   function showStep(n) {
     steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
     stepCurrentEl.textContent = String(n);
@@ -99,17 +134,7 @@ mobileNav.querySelectorAll('a').forEach(link => {
     }
   }
 
-  nextBtn.addEventListener('click', () => {
-    if (!validateStep(current)) {
-      nextBtn.disabled = true;
-      setTimeout(() => { nextBtn.disabled = false; }, 350);
-      return;
-    }
-    if (current < steps.length) {
-      current += 1;
-      showStep(current);
-    }
-  });
+  nextBtn.addEventListener('click', goNext);
 
   backBtn.addEventListener('click', () => {
     if (current > 1) {
@@ -118,8 +143,40 @@ mobileNav.querySelectorAll('a').forEach(link => {
     }
   });
 
-  document.getElementById('issue-other').addEventListener('input', () => {
+  // Auto-advance: a tapped choice moves straight to the next question.
+  form.querySelectorAll('.quote-step[data-auto] input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'Other') {
+        if (radio.name === 'issue') {
+          issueOther.classList.add('show');
+          issueOther.focus();
+        }
+        return;
+      }
+      if (radio.name === 'issue') issueOther.classList.remove('show');
+      setTimeout(goNext, 220);
+    });
+  });
+
+  yearSelect.addEventListener('change', () => {
+    if (yearSelect.value !== '') setTimeout(goNext, 180);
+  });
+
+  makeSelect.addEventListener('change', () => {
+    if (makeSelect.value === 'Other') {
+      makeOther.classList.add('show');
+      makeOther.focus();
+      return;
+    }
+    makeOther.classList.remove('show');
+    if (makeSelect.value !== '') setTimeout(goNext, 180);
+  });
+
+  issueOther.addEventListener('input', () => {
     form.querySelector('input[name="issue"][value="Other"]').checked = true;
+  });
+  makeOther.addEventListener('input', () => {
+    makeSelect.value = 'Other';
   });
 
   form.addEventListener('submit', e => e.preventDefault());

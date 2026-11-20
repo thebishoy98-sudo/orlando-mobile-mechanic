@@ -98,6 +98,7 @@ p { margin: 0 0 14px; color: var(--gray); }
 .field-label:first-of-type { margin-top: 0; }
 .quote-form input[type="text"],
 .quote-form input[type="tel"],
+.quote-form select,
 .quote-form textarea {
   width: 100%;
   padding: 11px 12px;
@@ -106,10 +107,20 @@ p { margin: 0 0 14px; color: var(--gray); }
   font-family: inherit;
   background: #fff;
   color: var(--black);
+  appearance: none;
+  border-radius: 0;
+}
+.quote-form select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 34px;
 }
 .quote-form input:focus,
+.quote-form select:focus,
 .quote-form textarea:focus { outline: 2px solid var(--red); outline-offset: 1px; }
-#issue-other { margin-top: 12px; }
+.hidden-field { display: none; margin-top: 12px; }
+.hidden-field.show { display: block; }
 .radio-list { display: flex; flex-direction: column; gap: 10px; }
 .radio-list label {
   display: flex;

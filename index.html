@@ -69,11 +69,11 @@
 
     <form id="quote-form" class="quote-form" novalidate>
 
-      <p class="quote-step-label">Step <span id="step-current">1</span> of <span id="step-total">5</span></p>
+      <p class="quote-step-label">Step <span id="step-current">1</span> of <span id="step-total">8</span></p>
 
-      <div class="quote-step active" data-step="1">
+      <div class="quote-step active" data-step="1" data-auto="issue">
         <h3>What's wrong with your car?</h3>
-        <div class="radio-list" data-group="issue">
+        <div class="radio-list">
           <label><input type="radio" name="issue" value="Won't start"> Won't start</label>
           <label><input type="radio" name="issue" value="Dead or weak battery"> Dead or weak battery</label>
           <label><input type="radio" name="issue" value="Brakes"> Brakes</label>
@@ -82,33 +82,73 @@
           <label><input type="radio" name="issue" value="Transmission"> Transmission</label>
           <label><input type="radio" name="issue" value="Other"> Other (describe below)</label>
         </div>
-        <textarea id="issue-other" placeholder="Briefly describe the issue" rows="2"></textarea>
+        <textarea id="issue-other" class="hidden-field" placeholder="Briefly describe the issue" rows="2"></textarea>
       </div>
 
-      <div class="quote-step" data-step="2">
-        <h3>Your vehicle &amp; location</h3>
-        <label class="field-label" for="vehicle">Vehicle (year, make, model)</label>
-        <input type="text" id="vehicle" placeholder="e.g. 2015 Honda Civic">
+      <div class="quote-step" data-step="2" data-auto="select">
+        <h3>What year is your car?</h3>
+        <select id="vehicle-year">
+          <option value="">Select a year</option>
+        </select>
+      </div>
+
+      <div class="quote-step" data-step="3" data-auto="make">
+        <h3>What's the make?</h3>
+        <select id="vehicle-make">
+          <option value="">Select a make</option>
+          <option>Toyota</option>
+          <option>Honda</option>
+          <option>Ford</option>
+          <option>Chevrolet</option>
+          <option>Nissan</option>
+          <option>Hyundai</option>
+          <option>Kia</option>
+          <option>Jeep</option>
+          <option>Dodge</option>
+          <option>Ram</option>
+          <option>GMC</option>
+          <option>Subaru</option>
+          <option>Volkswagen</option>
+          <option>BMW</option>
+          <option>Mercedes-Benz</option>
+          <option>Audi</option>
+          <option>Lexus</option>
+          <option>Mazda</option>
+          <option>Chrysler</option>
+          <option>Buick</option>
+          <option>Cadillac</option>
+          <option>Tesla</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="make-other" class="hidden-field" placeholder="Type the make">
+      </div>
+
+      <div class="quote-step" data-step="4">
+        <h3>Model &amp; location</h3>
+        <label class="field-label" for="vehicle-model">Model</label>
+        <input type="text" id="vehicle-model" placeholder="e.g. Civic, F-150, Accord">
         <label class="field-label" for="location">Where is the car right now?</label>
         <input type="text" id="location" placeholder="Address, or cross streets if on the road">
       </div>
 
-      <div class="quote-step" data-step="3">
-        <h3>Parts &amp; pricing</h3>
-        <p class="field-label">Do you already have the replacement parts?</p>
-        <div class="radio-list" data-group="parts">
+      <div class="quote-step" data-step="5" data-auto="parts">
+        <h3>Do you already have the replacement parts?</h3>
+        <div class="radio-list">
           <label><input type="radio" name="parts" value="Yes, I have the parts"> Yes, I have the parts</label>
           <label><input type="radio" name="parts" value="No, please supply the parts"> No, please supply the parts</label>
           <label><input type="radio" name="parts" value="Not sure"> Not sure</label>
         </div>
-        <p class="field-label">Would you like a price estimate before we come out?</p>
-        <div class="radio-list" data-group="pricing">
+      </div>
+
+      <div class="quote-step" data-step="6" data-auto="pricing">
+        <h3>Want a price estimate before we come out?</h3>
+        <div class="radio-list">
           <label><input type="radio" name="pricing" value="Yes, text me a price estimate first"> Yes, text me a price estimate first</label>
           <label><input type="radio" name="pricing" value="No, just come fix it"> No, just come fix it</label>
         </div>
       </div>
 
-      <div class="quote-step" data-step="4">
+      <div class="quote-step" data-step="7">
         <h3>How should we reach you?</h3>
         <label class="field-label" for="name">Name</label>
         <input type="text" id="name" placeholder="Your name">
@@ -116,7 +156,7 @@
         <input type="tel" id="phone" placeholder="(407) 555-0123">
       </div>
 
-      <div class="quote-step" data-step="5">
+      <div class="quote-step" data-step="8">
         <h3>Review &amp; send</h3>
         <p class="field-label">This is the text we'll send to Orlando Mobile Mechanic on your behalf:</p>
         <pre id="quote-summary" class="quote-summary"></pre>
