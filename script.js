@@ -32,7 +32,36 @@ mobileNav.querySelectorAll('a').forEach(link => {
   const makeSelect = document.getElementById('vehicle-make');
   const makeOther = document.getElementById('make-other');
   const issueOther = document.getElementById('issue-other');
+  const modelSelect = document.getElementById('vehicle-model-select');
+  const modelText = document.getElementById('vehicle-model-text');
   let current = 1;
+
+  const MODEL_STEP = 4;
+
+  const MODELS_BY_MAKE = {
+    Toyota: ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Tacoma', 'Tundra', '4Runner', 'Sienna', 'Prius', 'Avalon', 'Yaris', 'C-HR'],
+    Honda: ['Civic', 'Accord', 'CR-V', 'Pilot', 'Odyssey', 'HR-V', 'Ridgeline', 'Fit', 'Passport'],
+    Ford: ['F-150', 'Escape', 'Explorer', 'Edge', 'Mustang', 'Focus', 'Fusion', 'Expedition', 'Ranger', 'Bronco'],
+    Chevrolet: ['Silverado', 'Equinox', 'Malibu', 'Traverse', 'Tahoe', 'Suburban', 'Camaro', 'Impala', 'Colorado', 'Trax'],
+    Nissan: ['Altima', 'Sentra', 'Rogue', 'Murano', 'Pathfinder', 'Maxima', 'Versa', 'Frontier', 'Titan', 'Kicks'],
+    Hyundai: ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Accent', 'Kona', 'Palisade', 'Venue'],
+    Kia: ['Forte', 'K5', 'Optima', 'Soul', 'Sportage', 'Sorento', 'Telluride', 'Rio', 'Niro'],
+    Jeep: ['Wrangler', 'Grand Cherokee', 'Cherokee', 'Compass', 'Renegade', 'Gladiator'],
+    Dodge: ['Charger', 'Challenger', 'Durango', 'Journey', 'Grand Caravan', 'Dart'],
+    Ram: ['1500', '2500', '3500', 'ProMaster'],
+    GMC: ['Sierra', 'Terrain', 'Acadia', 'Yukon', 'Canyon'],
+    Subaru: ['Outback', 'Forester', 'Impreza', 'Crosstrek', 'Legacy', 'Ascent', 'WRX'],
+    Volkswagen: ['Jetta', 'Passat', 'Tiguan', 'Atlas', 'Golf', 'Beetle', 'Taos'],
+    BMW: ['3 Series', '5 Series', 'X3', 'X5', '1 Series', '7 Series', 'X1'],
+    'Mercedes-Benz': ['C-Class', 'E-Class', 'GLC', 'GLE', 'S-Class', 'A-Class'],
+    Audi: ['A4', 'A6', 'Q5', 'Q7', 'A3', 'Q3'],
+    Lexus: ['RX', 'ES', 'NX', 'GX', 'IS'],
+    Mazda: ['Mazda3', 'CX-5', 'CX-9', 'Mazda6', 'CX-30', 'MX-5 Miata'],
+    Chrysler: ['300', 'Pacifica', 'Voyager'],
+    Buick: ['Enclave', 'Encore', 'Envision', 'LaCrosse'],
+    Cadillac: ['Escalade', 'XT5', 'CT5', 'XT4'],
+    Tesla: ['Model 3', 'Model Y', 'Model S', 'Model X'],
+  };
 
   stepTotalEl.textContent = String(steps.length);
 
@@ -42,6 +71,23 @@ mobileNav.querySelectorAll('a').forEach(link => {
     opt.value = String(y);
     opt.textContent = String(y);
     yearSelect.appendChild(opt);
+  }
+
+  function prepareModelStep() {
+    const make = makeSelect.value === 'Other' ? makeOther.value.trim() : makeSelect.value;
+    const models = MODELS_BY_MAKE[make];
+    modelText.value = '';
+    modelText.classList.remove('show');
+    if (models) {
+      modelSelect.innerHTML = '<option value="">Select a model</option>' +
+        models.map(m => `<option>${m}</option>`).join('') +
+        '<option value="Other">Other / not listed</option>';
+      modelSelect.value = '';
+      modelSelect.classList.add('show');
+    } else {
+      modelSelect.classList.remove('show');
+      modelText.classList.add('show');
+    }
   }
 
   function getRadioValue(name) {
@@ -62,13 +108,18 @@ mobileNav.querySelectorAll('a').forEach(link => {
       if (makeSelect.value === 'Other') return makeOther.value.trim().length > 0;
       return true;
     }
-    if (step === 4) {
-      return document.getElementById('vehicle-model').value.trim().length > 0 &&
-             document.getElementById('location').value.trim().length > 0;
+    if (step === MODEL_STEP) {
+      if (modelSelect.classList.contains('show')) {
+        if (modelSelect.value === '') return false;
+        if (modelSelect.value === 'Other') return modelText.value.trim().length > 0;
+        return true;
+      }
+      return modelText.value.trim().length > 0;
     }
-    if (step === 5) return getRadioValue('parts') !== '';
-    if (step === 6) return getRadioValue('pricing') !== '';
-    if (step === 7) {
+    if (step === 5) return document.getElementById('location').value.trim().length > 0;
+    if (step === 6) return getRadioValue('parts') !== '';
+    if (step === 7) return getRadioValue('pricing') !== '';
+    if (step === 8) {
       return document.getElementById('name').value.trim().length > 0 &&
              document.getElementById('phone').value.trim().length > 0;
     }
@@ -81,7 +132,12 @@ mobileNav.querySelectorAll('a').forEach(link => {
     let make = makeSelect.value;
     if (make === 'Other') make = makeOther.value.trim();
     const year = yearSelect.value;
-    const model = document.getElementById('vehicle-model').value.trim();
+    let model;
+    if (modelSelect.classList.contains('show')) {
+      model = modelSelect.value === 'Other' ? modelText.value.trim() : modelSelect.value;
+    } else {
+      model = modelText.value.trim();
+    }
     const location = document.getElementById('location').value.trim();
     const parts = getRadioValue('parts');
     const pricing = getRadioValue('pricing');
@@ -128,6 +184,7 @@ mobileNav.querySelectorAll('a').forEach(link => {
     stepCurrentEl.textContent = String(n);
     backBtn.style.visibility = n === 1 ? 'hidden' : 'visible';
     nextBtn.style.visibility = n === steps.length ? 'hidden' : 'visible';
+    if (n === MODEL_STEP) prepareModelStep();
     if (n === steps.length) {
       summaryEl.textContent = buildSummary();
       updateSmsLink();
@@ -170,6 +227,16 @@ mobileNav.querySelectorAll('a').forEach(link => {
     }
     makeOther.classList.remove('show');
     if (makeSelect.value !== '') setTimeout(goNext, 180);
+  });
+
+  modelSelect.addEventListener('change', () => {
+    if (modelSelect.value === 'Other') {
+      modelText.classList.add('show');
+      modelText.focus();
+      return;
+    }
+    modelText.classList.remove('show');
+    if (modelSelect.value !== '') setTimeout(goNext, 180);
   });
 
   issueOther.addEventListener('input', () => {

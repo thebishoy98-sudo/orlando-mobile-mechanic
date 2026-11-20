@@ -69,7 +69,7 @@
 
     <form id="quote-form" class="quote-form" novalidate>
 
-      <p class="quote-step-label">Step <span id="step-current">1</span> of <span id="step-total">8</span></p>
+      <p class="quote-step-label">Step <span id="step-current">1</span> of <span id="step-total">9</span></p>
 
       <div class="quote-step active" data-step="1" data-auto="issue">
         <h3>What's wrong with your car?</h3>
@@ -124,14 +124,18 @@
       </div>
 
       <div class="quote-step" data-step="4">
-        <h3>Model &amp; location</h3>
-        <label class="field-label" for="vehicle-model">Model</label>
-        <input type="text" id="vehicle-model" placeholder="e.g. Civic, F-150, Accord">
-        <label class="field-label" for="location">Where is the car right now?</label>
-        <input type="text" id="location" placeholder="Address, or cross streets if on the road">
+        <h3>What model?</h3>
+        <select id="vehicle-model-select" class="hidden-field"></select>
+        <input type="text" id="vehicle-model-text" class="hidden-field" placeholder="Type the model">
       </div>
 
-      <div class="quote-step" data-step="5" data-auto="parts">
+      <div class="quote-step" data-step="5">
+        <h3>Where is the car right now?</h3>
+        <label class="field-label" for="location">Address or nearest cross streets</label>
+        <input type="text" id="location" name="street-address" autocomplete="street-address" placeholder="Start typing, your phone may suggest a saved address">
+      </div>
+
+      <div class="quote-step" data-step="6" data-auto="parts">
         <h3>Do you already have the replacement parts?</h3>
         <div class="radio-list">
           <label><input type="radio" name="parts" value="Yes, I have the parts"> Yes, I have the parts</label>
@@ -140,7 +144,7 @@
         </div>
       </div>
 
-      <div class="quote-step" data-step="6" data-auto="pricing">
+      <div class="quote-step" data-step="7" data-auto="pricing">
         <h3>Want a price estimate before we come out?</h3>
         <div class="radio-list">
           <label><input type="radio" name="pricing" value="Yes, text me a price estimate first"> Yes, text me a price estimate first</label>
@@ -148,15 +152,15 @@
         </div>
       </div>
 
-      <div class="quote-step" data-step="7">
+      <div class="quote-step" data-step="8">
         <h3>How should we reach you?</h3>
         <label class="field-label" for="name">Name</label>
-        <input type="text" id="name" placeholder="Your name">
+        <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name">
         <label class="field-label" for="phone">Phone number</label>
-        <input type="tel" id="phone" placeholder="(407) 555-0123">
+        <input type="tel" id="phone" name="tel" autocomplete="tel" placeholder="(407) 555-0123">
       </div>
 
-      <div class="quote-step" data-step="8">
+      <div class="quote-step" data-step="9">
         <h3>Review &amp; send</h3>
         <p class="field-label">This is the text we'll send to Orlando Mobile Mechanic on your behalf:</p>
         <pre id="quote-summary" class="quote-summary"></pre>
@@ -177,7 +181,8 @@
     <h2>Services</h2>
     <p class="section-intro">We work on all makes and models, right in your driveway or wherever you're stuck.</p>
     <ul class="service-list">
-      <li><h3>Auto Engine Diagnostic &amp; Tuning</h3><p>Check-engine lights, rough idle, loss of power, tune-ups.</p></li>
+      <li><h3>Check Engine Light Diagnosis</h3><p>Trouble code scan and diagnosis so you know exactly what's wrong.</p></li>
+      <li><h3>Auto Engine Diagnostic &amp; Tuning</h3><p>Rough idle, loss of power, tune-ups, and full engine diagnostics.</p></li>
       <li><h3>Battery &amp; Electrical Repair</h3><p>Testing, replacement, wiring issues, charging system repair.</p></li>
       <li><h3>A/C Installation &amp; Repair</h3><p>Diagnosis, recharge, and full repair, built for Florida heat.</p></li>
       <li><h3>Auto Brake Repair &amp; Replacement</h3><p>Pads, rotors, and full brake-system service.</p></li>
